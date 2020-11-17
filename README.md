@@ -18,6 +18,12 @@ Component Library
 √ What format do you want your config file to be in? · JSON
 √ Would you like to install them now with npm? · No / Yes
 
+- Override the rules for airbnb for JSX as below:
+### "rules": {
+### "react/jsx-filename-extension": [1, {
+### "extensions": [".js", ".jsx"]}
+### ]}
+- Install the Prettier extension in VS Code
 
 
 
