@@ -5,6 +5,20 @@ Component Library
 - npm install primeicons --save
 - npm install primeflex --save
 
+# Enable ESLint
+- npm install -g eslint
+- configure the eslint : eslint --init
+√ How would you like to use ESLint? · style
+√ What type of modules does your project use? · esm
+√ Which framework does your project use? · react
+√ Does your project use TypeScript? · No / Yes
+√ Where does your code run? · browser
+√ How would you like to define a style for your project? · guide
+√ Which style guide do you want to follow? · airbnb
+√ What format do you want your config file to be in? · JSON
+√ Would you like to install them now with npm? · No / Yes
+
+
 
 
 # Getting Started with Create React App
