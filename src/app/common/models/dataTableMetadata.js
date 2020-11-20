@@ -1,11 +1,9 @@
 class TableDefinition {
-  constructor(name, id, serverPaginated = false, serverSearchEnabled = true) {
+  constructor(name, id) {
     this.id = id;
     this.name = name;
     // other properties
     this.columnConfig = [];
-    this.serverPaginated = serverPaginated;
-    this.serverSearchEnabled = serverSearchEnabled;
   }
 
   addColumn(columnConfig) {

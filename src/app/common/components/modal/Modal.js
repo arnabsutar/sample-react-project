@@ -1,28 +1,30 @@
 import { Dialog } from 'primereact/dialog';
-import { React, useEffect, useState } from 'react';
-import { Button } from 'primereact/button';
+import { React } from 'react';
+import PropTypes from 'prop-types';
 
-const Modal = ({showModal, closeModalFlag, modalContent}) => {
+const Modal = ({ showModal, closeModalFlag, modalContent }) => (
+  <Dialog
+    style={{ width: '50vw' }}
+    visible={showModal}
+    onHide={() => closeModalFlag()}
+  >
+    {modalContent.name}
+  </Dialog>
+);
 
-    const header = (
-        <div>
-            This is the header!!
-        </div>
-    );
+Modal.propTypes = {
+  showModal: PropTypes.bool,
+  closeModalFlag: PropTypes.func.isRequired,
+  modalContent: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+  }),
+};
 
-    const footer = (
-        <div>
-            <Button label="Yes" icon="pi pi-check" />
-            <Button label="No" icon="pi pi-times" />
-        </div>
-    );
-
-    return (
-        <Dialog style={{width:'50vw'}} visible={showModal} 
-        onHide={()=>closeModalFlag()}>
-            {modalContent.name}
-        </Dialog>
-    );
-}
+Modal.defaultProps = {
+  showModal: false,
+  modalContent: {
+    name: '',
+  },
+};
 
 export default Modal;
