@@ -1,7 +1,7 @@
 import React from 'react';
 import { withA11y } from '@storybook/addon-a11y';
 
-import PageHeader from '.';
+import { PageHeader } from '..';
 
 export default {
   title: 'Example/PageHeader',
@@ -11,14 +11,14 @@ export default {
 
 const Template = (args) => <PageHeader {...args} />;
 
-export const Example1 = Template.bind({});
-Example1.args = {
-  primaryHeading: 'Page',
-  secondaryHeading: 'Title',
+export const Example = Template.bind({});
+Example.args = {
+  primaryHeading: 'Heading',
+  secondaryHeading: 'Sub Heading',
 };
 
-export const Secondary = Template.bind({});
-Secondary.args = {
-  primaryHeading: 'Certification',
-  secondaryHeading: 'Listing',
-};
+// export const Secondary = Template.bind({});
+// Secondary.args = {
+//   primaryHeading: 'Certification',
+//   secondaryHeading: 'Listing',
+// };

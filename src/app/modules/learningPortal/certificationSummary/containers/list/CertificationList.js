@@ -8,7 +8,7 @@ import 'primeicons/primeicons.css';
 import 'primereact/resources/themes/saga-blue/theme.css';
 import 'primereact/resources/primereact.css';
 import 'primeflex/primeflex.css';
-import PageHeader from '../../../../../common/components/pageHeader/pageHeader';
+import { PageHeader } from '../../../../../common/components';
 
 const certificationList = [
   {
@@ -59,7 +59,7 @@ const CertificationList = () => {
     <div>
       <PageHeader
         primaryHeading="Certification"
-        secondaryHeading="Test"
+        secondaryHeading="List"
       ></PageHeader>
       <div className="card">
         <DataTable value={certificationList} paginator rows={2}>
