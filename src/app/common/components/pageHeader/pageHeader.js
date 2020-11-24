@@ -6,7 +6,7 @@ const PageHeader = ({ primaryHeading, secondaryHeading }) => (
   <div align="left">
     <span className="page-header-primary">{primaryHeading}</span>
     &nbsp;
-    {secondaryHeading}
+    <span className="page-header-secondary">{secondaryHeading}</span>
   </div>
 );
 

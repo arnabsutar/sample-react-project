@@ -14,8 +14,8 @@ const Template = (args) => <PageHeader {...args} />;
 
 export const Example1 = Template.bind({});
 Example1.args = {
-  primaryHeading: 'Heading1',
-  secondaryHeading: 'SubHeading',
+  primaryHeading: 'Page',
+  secondaryHeading: 'Title',
 };
 
 export const Secondary = Template.bind({});
