@@ -10,11 +10,7 @@ function App() {
       {/* <Content> */}
       <Router>
         <Switch>
-          <Route
-            exact
-            path="/learningPortal/CertificationList"
-            component={CertificationList}
-          />
+          <Route exact path="/" component={CertificationList} />
         </Switch>
       </Router>
       {/* </Content> */}
