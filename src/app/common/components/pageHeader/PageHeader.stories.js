@@ -1,13 +1,12 @@
 import React from 'react';
+import { withA11y } from '@storybook/addon-a11y';
 
-import PageHeader from './pageHeader';
+import PageHeader from '.';
 
 export default {
   title: 'Example/PageHeader',
   component: PageHeader,
-  argTypes: {
-    backgroundColor: { control: 'color' },
-  },
+  decorators: [withA11y],
 };
 
 const Template = (args) => <PageHeader {...args} />;
