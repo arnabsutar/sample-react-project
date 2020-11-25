@@ -70,8 +70,8 @@ const CertificationList = () => {
         <input type="radio" value="fr" name="Language" /> French
       </div>
       <PageHeader
-        primaryHeading={t('businessCard:primaryHeading')}
-        secondaryHeading="List"
+        primaryHeading={t('static:businessCard.primaryHeading')}
+        secondaryHeading={t('welcome')}
       ></PageHeader>
       <div className="card">
         <DataTable value={certificationList} paginator rows={2}>

@@ -1,6 +1,6 @@
 const frLang = {
-  businessCard: {
-    primaryHeading: 'Cartes de visite',
+  static: {
+    'businessCard.primaryHeading': 'Cartes de visite',
   },
 };
 export default frLang;
