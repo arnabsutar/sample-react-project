@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
+// the hook
+import { useTranslation } from 'react-i18next';
 import Modal from '../../../../../common/components/modal/Modal';
 import 'primeicons/primeicons.css';
 import 'primereact/resources/themes/saga-blue/theme.css';
@@ -30,6 +32,7 @@ const CertificationList = () => {
   const [reset, serResetValue] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState('');
+  const [t, i18n] = useTranslation();
 
   useEffect(() => {
     setCertifications(certificationList);
@@ -57,8 +60,17 @@ const CertificationList = () => {
   console.log('certificationList', certificationList);
   return (
     <div>
+      <div
+        onChange={(event) => {
+          console.log('Language', event.target.value);
+          i18n.changeLanguage(event.target.value);
+        }}
+      >
+        <input type="radio" value="en" name="Language" /> English
+        <input type="radio" value="fr" name="Language" /> French
+      </div>
       <PageHeader
-        primaryHeading="Certification"
+        primaryHeading={t('businessCard:primaryHeading')}
         secondaryHeading="List"
       ></PageHeader>
       <div className="card">

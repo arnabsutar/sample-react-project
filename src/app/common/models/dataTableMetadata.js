@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 class TableDefinition {
   constructor(name, id) {
     this.id = id;
@@ -29,7 +30,7 @@ class ColumnDefinition {
   addAction(action) {
     if (!this.isAction) {
       throw new Error(
-        "Action can not be added to this column. Please make isAction = true."
+        'Action can not be added to this column. Please make isAction = true.',
       );
     }
     // TODO: check for duplicate action

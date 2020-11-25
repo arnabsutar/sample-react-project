@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+// eslint-disable-next-line no-unused-vars
+import i18n from './app/common/i18n';
 
 ReactDOM.render(
   <React.StrictMode>
