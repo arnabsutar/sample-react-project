@@ -27,6 +27,7 @@ i18n
       i18n.addResources('en', 'static', enLang.static);
       i18n.addResources('fr', 'static', frLang.static);
       console.log('Resources updated');
+      console.log(window.SERVER_DATA);
     },
   );
 
