@@ -24,7 +24,7 @@ const ApplicationBaseReducer = (state = initialState, action) => {
       };
     default:
       return {
-        ...state,
+        state,
       };
   }
 };

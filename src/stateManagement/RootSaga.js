@@ -1,6 +1,6 @@
-import { take, call, all } from 'redux-saga/effects';
-import ApplicationBaseSaga from '../app/common/redux/sagas/ApplicationBaseSaga';
+import { all } from 'redux-saga/effects';
+import applicationBaseWatcher from '../app/common/redux/sagas/applicationBaseWatcher';
 
 export default function* RootSaga() {
-  yield all([ApplicationBaseSaga()]);
+  yield all([applicationBaseWatcher()]);
 }
