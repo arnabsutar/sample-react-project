@@ -6,10 +6,6 @@ import { Button } from 'primereact/button';
 // the hook
 import { useTranslation } from 'react-i18next';
 import Modal from '../../../../../common/components/modal/Modal';
-import 'primeicons/primeicons.css';
-import 'primereact/resources/themes/saga-blue/theme.css';
-import 'primereact/resources/primereact.css';
-import 'primeflex/primeflex.css';
 import { PageHeader } from '../../../../../common/components';
 
 const certificationList = [

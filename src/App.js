@@ -3,6 +3,10 @@ import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import './App.css';
 import CertificationList from './app/modules/learningPortal/certificationSummary/containers/list/CertificationList';
+import './app/common/libs/primeicons/primeicons.css';
+import 'primereact/resources/themes/saga-blue/theme.css';
+import 'primereact/resources/primereact.css';
+import 'primeflex/primeflex.css';
 import TestBed from './app/modules/poc/containers/testBeb/testBed';
 
 function App() {

@@ -10,6 +10,10 @@ class TableDefinition {
   addColumn(columnConfig) {
     this.columnConfig.push(columnConfig);
   }
+
+  getColumns() {
+    return this.columnConfig ? this.columnConfig : [];
+  }
 }
 
 class ColumnDefinition {
