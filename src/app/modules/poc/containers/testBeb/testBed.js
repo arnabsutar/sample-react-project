@@ -12,9 +12,14 @@ import {
 
 const generateTableDefination = () => {
   const tableDef = new TableDefinition('prodList', 'prdList1');
-  const columns = [];
-  tableDef.addColumn(new ColumnDefinition('code', 'Item Code', 'code'));
+
+  tableDef.setColumnResizable();
+
+  tableDef.addColumn(new ColumnDefinition('code', 'Item Code', 'code', true));
   tableDef.addColumn(new ColumnDefinition('name', 'Short Name', 'name'));
+  tableDef.addColumn(
+    new ColumnDefinition('category', 'Category', 'category', true, false),
+  );
   return tableDef;
 };
 

@@ -11,20 +11,39 @@ class TableDefinition {
     this.columnConfig.push(columnConfig);
   }
 
+  setColumnResizable(isColumnResizable = true) {
+    this.isColumnResizable = isColumnResizable;
+  }
+
+  setColumnReorderable(isReorderable = true) {
+    this.isReorderable = isReorderable;
+  }
+
   getColumns() {
     return this.columnConfig ? this.columnConfig : [];
   }
 }
 
 class ColumnDefinition {
-  constructor(id, header, dataField, visibility = true, isAction = false) {
+  constructor(
+    id,
+    header,
+    dataField,
+    sortable = false,
+    visibility = true,
+    defaultWidth = '500px',
+    isAction = false,
+  ) {
     this.id = id;
     this.header = header;
+    this.sortable = sortable;
     this.visibility = visibility;
     this.isAction = isAction;
     this.actions = [];
     this.FilterDefination = null;
     this.dataField = dataField;
+    this.defaultWidth = defaultWidth;
+    this.width = defaultWidth;
   }
 
   addFilterDefinition(filterDef) {
