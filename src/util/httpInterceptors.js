@@ -15,11 +15,21 @@ import {
   processingStarted,
   processingCompleted,
 } from '../app/common/redux/actions/commonActions';
+import API, { REQUSET_HEADER } from '../app/common/apiManagement/apiConfig';
 
 const USER_NOT_AUTHENTICATED = 'UserNotAuthenticated';
 
+const getApiDetail = (apiKey) => API[apiKey];
+
 const authenticationInterceptor = (req) => {
-  if (_.isEmpty(req.headers[STORAGE_KEY.AUTHENTICATION_TOKEN])) {
+  if (_.isEmpty(req.headers[REQUSET_HEADER.API_KEY])) {
+    throw new Error(`Invalid API Key : ${req.headers[REQUSET_HEADER.API_KEY]}`);
+  }
+  const apiOption = getApiDetail(REQUSET_HEADER.API_KEY);
+  if (
+    apiOption.authenticated
+    && _.isEmpty(req.headers[STORAGE_KEY.AUTHENTICATION_TOKEN])
+  ) {
     // user is not authenticated; re-authenticate user
     throw new Error(USER_NOT_AUTHENTICATED);
   }
@@ -39,28 +49,48 @@ const baseRequestInterceptor = (req) => {
   // get the api key from resp.config
   // get the API KEY
   // If wait cursor is required dispatch action
-  dispatch(processingStarted());
+  if (_.isEmpty(req.headers[REQUSET_HEADER.API_KEY])) {
+    throw new Error(`Invalid API Key : ${req.headers[REQUSET_HEADER.API_KEY]}`);
+  }
+  const apiOption = getApiDetail(req.headers[REQUSET_HEADER.API_KEY]);
+  if (apiOption.authenticated) {
+    req.headers[REQUSET_HEADER.AUTHORIZATION] = `Bearer ${getAccessToken()}`;
+  }
+  if (apiOption.showLoading) {
+    dispatch(processingStarted());
+  }
+
   return req;
 };
 const baseResponseInterceptor = (resp) => {
   // get the api key from resp.config
   // get the API KEY
   // If wait cursor is required dispatch action
-  dispatch(processingCompleted());
+  // need to check how we can get the request headers
+  const apiOption = getApiDetail(resp.config.headers[REQUSET_HEADER.API_KEY]);
+  if (apiOption.showLoading) {
+    dispatch(processingCompleted());
+  }
   return resp;
 };
 
 const rejectRequest = (error) => {
   Promise.reject(error);
 };
+
 const errorInterceptor = (error) => {
+  const originalRequest = error.config;
+  const apiOption = getApiDetail(originalRequest.headers[REQUSET_HEADER.API_KEY]);
+  if (apiOption.showLoading) {
+    dispatch(processingStarted());
+  }
   // log error
   // handle error
   if (error.message === USER_NOT_AUTHENTICATED) {
     history.push('/login');
     return Promise.reject(error);
   }
-  const originalRequest = error.config;
+
   if (error.response.status === 401 && !originalRequest._retry) {
     originalRequest._retry = true;
     return http
@@ -78,7 +108,7 @@ const errorInterceptor = (error) => {
           setToken(res.data);
 
           // 2) Change Authorization header
-          originalRequest.headers.Authorization = `Bearer ${getAccessToken()}`;
+          originalRequest.headers[REQUSET_HEADER.AUTHORIZATION] = `Bearer ${getAccessToken()}`;
 
           // 3) return originalRequest object with Axios.
           return http.request(originalRequest);

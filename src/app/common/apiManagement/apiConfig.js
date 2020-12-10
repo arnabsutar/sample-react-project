@@ -4,7 +4,7 @@ const API = {
     endpoint: `${window.SERVER_DATA.apiHost}/sample`,
     type: 'GET',
     authenticated: true,
-    waitingEnabled: true,
+    showLoading: true,
   },
 };
 
