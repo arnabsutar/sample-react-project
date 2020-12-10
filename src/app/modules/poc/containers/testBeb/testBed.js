@@ -13,13 +13,13 @@ import {
 const generateTableDefination = () => {
   const tableDef = new TableDefinition('prodList', 'prdList1');
 
-  tableDef.setColumnResizable();
-
   tableDef.addColumn(new ColumnDefinition('code', 'Item Code', 'code', true));
-  tableDef.addColumn(new ColumnDefinition('name', 'Short Name', 'name'));
+  tableDef.addColumn(new ColumnDefinition('name', 'Short Name', 'name', false));
   tableDef.addColumn(
-    new ColumnDefinition('category', 'Category', 'category', true, false),
+    new ColumnDefinition('category', 'Category', 'category', true, true),
   );
+
+  tableDef.setColumnResizable();
   return tableDef;
 };
 
@@ -38,6 +38,8 @@ const TestBed = (props) => {
       <DataGrid
         dataSource={products}
         tableMetaData={generateTableDefination()}
+        // eslint-disable-next-line no-console
+        onTableMetaDataChange={(data) => console.log('Changed Metadata', data)}
       />
     </div>
   );

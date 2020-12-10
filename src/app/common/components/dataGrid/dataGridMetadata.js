@@ -5,6 +5,16 @@ class TableDefinition {
     this.name = name;
     // other properties
     this.columnConfig = [];
+    this.pageSize = 10;
+  }
+
+  setPageSize(newPageSize) {
+    if (newPageSize < 1 || newPageSize > 100) {
+      throw new Error(
+        `'${newPageSize}' is invalid. Please provide a page size between 1 to 100`,
+      );
+    }
+    this.pageSize = newPageSize;
   }
 
   addColumn(columnConfig) {

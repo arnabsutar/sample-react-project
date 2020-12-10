@@ -19,4 +19,7 @@ const appStrore = createStore(
 // const appStrore = createStore(RootReducer, applyMiddleware(sagaMiddleware));
 sagaMiddleware.run(RootSaga);
 
+const { dispatch } = appStrore;
+
 export default appStrore;
+export { dispatch };
