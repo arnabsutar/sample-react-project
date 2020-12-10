@@ -1,4 +1,11 @@
 /* eslint-disable max-classes-per-file */
+const COLUMN_TYPE = {
+  TEXT: 'text',
+  NUMBER: 'number',
+  DATE: 'date',
+  ACTION: 'action',
+};
+
 class TableDefinition {
   constructor(name, id) {
     this.id = id;
@@ -39,21 +46,33 @@ class ColumnDefinition {
     id,
     header,
     dataField,
+    columType,
     sortable = false,
     visibility = true,
-    defaultWidth = '500px',
-    isAction = false,
+    defaultWidth = '200px',
+    body = null,
   ) {
     this.id = id;
     this.header = header;
     this.sortable = sortable;
     this.visibility = visibility;
-    this.isAction = isAction;
+    this.columType = columType;
+    this.isAction = columType === COLUMN_TYPE.ACTION;
+    switch (this.columType) {
+      case COLUMN_TYPE.TEXT:
+      case COLUMN_TYPE.DATE:
+      case COLUMN_TYPE.NUMBER:
+      case COLUMN_TYPE.ACTION:
+        break;
+      default:
+        throw new Error(`Invalid column type ${this.columType}`);
+    }
     this.actions = [];
     this.FilterDefination = null;
     this.dataField = dataField;
     this.defaultWidth = defaultWidth;
     this.width = defaultWidth;
+    this.body = body;
   }
 
   addFilterDefinition(filterDef) {
@@ -80,12 +99,12 @@ class FilterDefination {
 }
 
 class ActionDefinition {
-  constructor(id, name, icon, actionHandler, order) {
+  constructor(id, name, icon, className, actionHandler, order) {
     this.id = id;
     this.name = name;
     this.icon = icon;
+    this.className = className;
     this.actionHandler = actionHandler;
-    this.disabled = false;
     this.order = order;
   }
 }
@@ -95,4 +114,5 @@ export {
   ColumnDefinition,
   FilterDefination,
   ActionDefinition,
+  COLUMN_TYPE,
 };

@@ -34,7 +34,10 @@ const CertificationList = () => {
     setCertifications(certificationList);
   });
 
-  const actionBodyTemplate = (rowData) => {
+  const actionBodyTemplate = (rowData, arg2, arg3) => {
+    console.log("RowData", rowData);
+    console.log("Arg2", arg2.field);
+
     return (
       <React.Fragment>
         <Button

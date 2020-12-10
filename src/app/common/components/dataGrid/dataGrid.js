@@ -5,12 +5,14 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
+// import _ from 'lodash-es';
 
 const DataGrid = (props) => {
   const { dataSource, tableMetaData, onTableMetaDataChange } = props;
 
   const [metaData, setMetaData] = useState(tableMetaData);
-
+  // const [initialMetaData, setInitialMetaData] = useState(_.cloneDeep(tableMetaData));
+  // const bodyTemplate = (rowData)
   const dynamicColumns = metaData
     .getColumns()
     .filter((col) => col.visibility)
@@ -22,6 +24,7 @@ const DataGrid = (props) => {
         header={col.header}
         style={{ width: col.width }}
         {...(col.sortable ? { sortable: true } : {})}
+        {...(col.body ? { body: col.body } : {})}
       />
     ));
 
@@ -44,9 +47,9 @@ const DataGrid = (props) => {
       scrollable
       {...(metaData.isColumnResizable
         ? {
-            resizableColumns: true,
-            onColumnResizeEnd: onColumnResizeHandler,
-          }
+          resizableColumns: true,
+          onColumnResizeEnd: onColumnResizeHandler,
+        }
         : {})}
     >
       {dynamicColumns}
