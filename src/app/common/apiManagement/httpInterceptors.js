@@ -6,16 +6,16 @@ import {
   getAccessToken,
   getRefreshToken,
   setToken,
-} from './localStorageService';
+} from '../util/localStorageService';
 
-import history from './history';
-import http from '../app/common/apiManagement/http';
-import { dispatch } from '../stateManagement/appStore';
+import history from '../util/history';
+import http from './http';
+import { dispatch } from '../../../stateManagement/appStore';
 import {
   processingStarted,
   processingCompleted,
-} from '../app/common/redux/actions/commonActions';
-import API, { REQUSET_HEADER } from '../app/common/apiManagement/apiConfig';
+} from '../redux/actions/commonActions';
+import API, { REQUSET_HEADER } from './apiConfig';
 
 const USER_NOT_AUTHENTICATED = 'UserNotAuthenticated';
 

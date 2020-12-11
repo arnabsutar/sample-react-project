@@ -7,6 +7,7 @@ import { Button } from 'primereact/button';
 import { useTranslation } from 'react-i18next';
 import Modal from '../../../../../common/components/modal/Modal';
 import { PageHeader } from '../../../../../common/components';
+import { setCurrentLocale } from '../../../../../common/i18n';
 
 const certificationList = [
   {
@@ -62,7 +63,7 @@ const CertificationList = () => {
       <div
         onChange={(event) => {
           console.log('Language', event.target.value);
-          i18n.changeLanguage(event.target.value);
+          setCurrentLocale(event.target.value);
         }}
       >
         <input type="radio" value="en" name="Language" /> English

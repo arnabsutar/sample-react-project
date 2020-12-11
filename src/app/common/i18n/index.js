@@ -3,6 +3,7 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import Backend from 'i18next-http-backend';
 import { enLang, frLang } from './languages';
+import { setLocale } from '../util/NumberFormatter';
 
 i18n
   .use(Backend)
@@ -16,7 +17,7 @@ i18n
       ns: ['translation'],
       defaultNS: 'translation',
       backend: {
-        loadPath: 'http://localhost:8080/locales/{{lng}}/{{ns}}.json',
+        loadPath: 'http://localhost:3000/locales/{{lng}}/{{ns}}.json',
       },
     },
     (err, t) => {
@@ -31,4 +32,10 @@ i18n
     },
   );
 
+const setCurrentLocale = (locale) => {
+  setLocale(locale);
+  i18n.changeLanguage(locale);
+}
+
 export default i18n;
+export { setCurrentLocale };
