@@ -15,7 +15,7 @@ import {
   processingStarted,
   processingCompleted,
 } from '../redux/actions/commonActions';
-import API, { REQUSET_HEADER } from './apiConfig';
+import API, { REQUSET_HEADER } from './basicApi';
 
 const USER_NOT_AUTHENTICATED = 'UserNotAuthenticated';
 
