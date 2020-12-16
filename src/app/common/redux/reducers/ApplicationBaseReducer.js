@@ -1,7 +1,7 @@
 /* eslint-disable no-debugger */
 import { commonTypes } from '../actions/commonActions';
 
-const initialState = {
+export const initialState = {
   loaded: false,
   applicationName: 'React Sample Project Setup',
   processingInProgress: 0,
@@ -25,9 +25,7 @@ const ApplicationBaseReducer = (state = initialState, action) => {
         processingInProgress: state.processingInProgress - 1,
       };
     default:
-      return {
-        ...state,
-      };
+      return state;
   }
 };
 

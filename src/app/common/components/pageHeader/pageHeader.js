@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import './pageHeader.scss';
 
 const PageHeader = ({ primaryHeading, secondaryHeading }) => (
-  <div align="left">
-    <span className="page-header-primary">{primaryHeading}</span>
+  <div align="left" data-test="PageHeaderComponent">
+    <span className="page-header-primary" data-test="PrimaryHeading">{primaryHeading}</span>
     &nbsp;
-    <span className="page-header-secondary">{secondaryHeading}</span>
+    <span className="page-header-secondary" data-test="SecondaryHeading">{secondaryHeading}</span>
   </div>
 );
 

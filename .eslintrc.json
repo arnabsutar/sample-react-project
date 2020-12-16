@@ -12,6 +12,7 @@
     "sourceType": "module"
   },
   "plugins": ["react"],
+  "ignorePatterns": ["**/*.spec.js"],
   "rules": {
     "react/jsx-props-no-spreading": "off",
     "object-curly-newline": "off",
