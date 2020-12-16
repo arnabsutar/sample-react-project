@@ -7,6 +7,7 @@ const Modal = ({ showModal, closeModalFlag, modalContent }) => (
     style={{ width: '50vw' }}
     visible={showModal}
     onHide={() => closeModalFlag()}
+    data-test="ModalComponent"
   >
     {modalContent.name}
   </Dialog>
