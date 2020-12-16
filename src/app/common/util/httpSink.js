@@ -1,6 +1,3 @@
-/* eslint-disable no-nested-ternary */
-/* eslint-disable class-methods-use-this */
-/* eslint-disable no-underscore-dangle */
 // import _ from 'lodash-es';
 
 import axios from 'axios';
@@ -8,7 +5,7 @@ import axios from 'axios';
 const axiosInstance = axios.create({
   timeout: 1000,
   headers: {
-    // 'sink-type': 'http',
+    'sink-type': 'http',
     'content-type': 'application/json',
   },
 });
@@ -47,43 +44,52 @@ class HttpSink {
     this.batchSize = options.batchSize;
     this.eventQueues = [];
 
-    this._internalEventThreshold = 2;
+    this.internalEventThreshold = 2;
     if (this.batchMode && this.batchSize > 1) {
-      this._internalEventThreshold = this.batchSize;
+      this.internalEventThreshold = this.batchSize;
     }
   }
 
+  /**
+   * @param {*} events  - events which needs to be processed by the sink
+   */
   emit(events) {
     // update the event queue as per the level switch
     this.eventQueues = [...this.eventQueues, ...events].filter((e) => e);
-    console.warn('http sink not ready yet', this.eventQueues);
-
-    this._processLogs();
+    this.processLogs();
   }
 
+  /**
+   * Log any pending events
+   */
   flush() {
     // all the pending items needs to be pushed
-    this._postEvent(this.eventQueues);
+    this.postEvent(this.eventQueues);
     this.eventQueues.length = 0;
   }
 
-  _processLogs() {
+  /**
+   * this will process log depending on the batch size configured for the sink
+   */
+  processLogs() {
     const logMessages = [];
-    let counter = this._internalEventThreshold;
-    if (this.eventQueues.length >= this._internalEventThreshold) {
+    let counter = this.internalEventThreshold;
+    if (this.eventQueues.length >= this.internalEventThreshold) {
       while (counter > 0 && this.eventQueues.length > 0) {
         logMessages.push(this.eventQueues.pop());
         counter -= 1;
       }
     }
     if (logMessages.length > 0) {
-      this._postEvent(logMessages);
+      this.postEvent(logMessages);
     }
   }
 
-  _postEvent(events) {
+  /**
+   *@param {*} events - events which needs to be posted to the configured endpoint.
+   */
+  postEvent(events) {
     const logs = events.map((e) => e);
-    logs.map((l) => console.log('From Http Sink : ', l));
     axiosInstance.post(this.url, logs);
   }
 }

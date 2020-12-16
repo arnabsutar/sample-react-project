@@ -10,7 +10,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api/log', (req, res) => {
-  res.send('Hello Logging ' + req);
+  res.send(`Hello Logging ${req}`);
 });
 
 app.listen(3000);
