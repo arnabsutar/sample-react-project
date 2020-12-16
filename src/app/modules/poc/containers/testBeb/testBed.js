@@ -15,6 +15,7 @@ import {
 } from '../../../../common/components/dataGrid/dataGridMetadata';
 
 import { actionBodyGenerator } from '../../../../common/components/dataGrid/dataGridUtil';
+import logger from '../../../../../appLogger';
 
 const generateTableDefination = () => {
   const tableDef = new TableDefinition('prodList', 'prdList1');
@@ -27,13 +28,13 @@ const generateTableDefination = () => {
 
   const actionColumn = new ColumnDefinition('action', 'Action', null, COLUMN_TYPE.ACTION, false, true, '300px');
   const editAction = new ActionDefinition('edit', 'Edit', 'pi pi-pencil', 'pi pi-user-edit', (rowData, colData) => {
-    console.log('Edit Handler Row Data', rowData);
-    console.log('Edit Handler Column Data', colData);
+    logger.warn('Edit Handler Row Data {colData}', colData);
+    logger.info('Edit Handler Column Data', colData);
     alert('Edit Handler');
   }, 1);
   const deleteAction = new ActionDefinition('delete', 'Deleted', 'pi pi-trash', 'p-button-rounded p-button-warning', (rowData, colData) => {
-    console.log('Delete Handler Row Data', rowData);
-    console.log('Delete Handler Column Data', colData);
+    logger.debug('Delete Handler Row Data', rowData);
+    logger.error('Delete Handler Column Data', colData);
     alert('Delete Handler');
   }, 1);
 
