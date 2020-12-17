@@ -58,6 +58,13 @@ const TestBed = (props) => {
     { code: 'A02', name: 'Item 2', category: 'Mechanical', quantity: '20' },
   ];
 
+  logger.fatal('Application startup failed due to a missing configuration file');
+  logger.error('Could not parse response message');
+  logger.warn('Execution time of {time} exceeded budget of {budget}ms', new Date(), 50);
+  logger.info('Started a new session');
+  logger.debug('Accept-Encoding header value: {acceptEncoding}', 'sample-encoding');
+  logger.verbose('Exiting getUsers()');
+
   return (
     <div>
       <DataGrid

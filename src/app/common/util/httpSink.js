@@ -2,6 +2,27 @@
 
 import axios from 'axios';
 
+const getLogLevel = (levelStr) => {
+  switch (levelStr) {
+    case 'off':
+      return 0;
+    case 'fatal':
+      return 1;
+    case 'error':
+      return 3;
+    case 'warning':
+      return 7;
+    case 'information':
+      return 15;
+    case 'debug':
+      return 31;
+    case 'verbose':
+      return 63;
+    default:
+      return 15;
+  }
+};
+
 const axiosInstance = axios.create({
   timeout: 1000,
   headers: {
@@ -24,7 +45,7 @@ class HttpSink {
    * @param {*} option :
    * {
    *  url : null,
-   *  minimumLogLevel: information,
+   *  restrictedToMinimumLevel: information,
    *  enableRetry: false,
    *  retryCount: 0, // not implemented yet
    *  batchMode: false,
@@ -36,8 +57,8 @@ class HttpSink {
     //   throw new Error('URL is mandatory');
     // }
     this.url = options.url;
-    this.minimumLogLevel = options.minimumLogLevel
-      ? options.minimumLogLevel : HttpSinkLevelSwitch.information;
+    this.restrictedToMinimumLevel = options.restrictedToMinimumLevel
+      ? getLogLevel(options.restrictedToMinimumLevel) : getLogLevel('information');
     this.enableRetry = options.enableRetry;
     this.retryCount = options.retryCount;
     this.batchMode = options.batchMode;
@@ -55,7 +76,9 @@ class HttpSink {
    */
   emit(events) {
     // update the event queue as per the level switch
-    this.eventQueues = [...this.eventQueues, ...events].filter((e) => e);
+    this.eventQueues = [...this.eventQueues, ...events].filter(
+      (e) => e.level <= this.restrictedToMinimumLevel,
+    );
     this.processLogs();
   }
 
