@@ -77,7 +77,7 @@ class HttpSink {
   emit(events) {
     // update the event queue as per the level switch
     this.eventQueues = [...this.eventQueues, ...events].filter(
-      (e) => e.level <= this.restrictedToMinimumLevel,
+      (e) => e.severity <= this.restrictedToMinimumLevel,
     );
     this.processLogs();
   }

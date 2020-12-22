@@ -1,826 +1,783 @@
-/* eslint-disable*/
-(function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports)
-    : typeof define === 'function' && define.amd ? define(['exports'], factory)
-      : (factory((global.structuredLog = global.structuredLog || {})));
-}(this, ((exports) => {
-  const __assign = Object.assign || function (target) {
-    for (var source, i = 1; i < arguments.length; i++) {
-      source = arguments[i];
-      for (const prop in source) {
-        if (Object.prototype.hasOwnProperty.call(source, prop)) {
-          target[prop] = source[prop];
+/* eslint-disable */
+/**
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+ */
+if (typeof Object.assign !== 'function') {
+  Object.assign = function (target, varArgs) {
+    if (target == null) {
+      throw new TypeError('Cannot convert undefined or null to object');
+    }
+    const to = Object(target);
+    for (let index = 1; index < arguments.length; index++) {
+      const nextSource = arguments[index];
+      if (nextSource != null) {
+        for (const nextKey in nextSource) {
+          if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+            to[nextKey] = nextSource[nextKey];
+          }
         }
       }
     }
-    return target;
+    return to;
   };
+}
 
-  function __extends(d, b) {
-    for (const p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-  }
-
+/**
+ * Represents the severity level of a log event.
+ */
+let LogEventLevel;
+(function (LogEventLevel) {
+  LogEventLevel[LogEventLevel.off = 0] = 'off';
+  LogEventLevel[LogEventLevel.fatal = 1] = 'fatal';
+  LogEventLevel[LogEventLevel.error = 3] = 'error';
+  LogEventLevel[LogEventLevel.warning = 7] = 'warning';
+  LogEventLevel[LogEventLevel.information = 15] = 'information';
+  LogEventLevel[LogEventLevel.debug = 31] = 'debug';
+  LogEventLevel[LogEventLevel.verbose = 63] = 'verbose';
+}(LogEventLevel || (LogEventLevel = {})));
+/**
+ * Checks if a log event level includes the target log event level.
+ * @param {LogEventLevel} level The level to check.
+ * @param {LogEventLevel} target The target level.
+ * @returns True if the checked level contains the target level, or if the checked level is undefined.
+ */
+function isEnabled(level, target) {
+  return typeof level === 'undefined' || (level & target) === target;
+}
+/**
+ * Represents a log event.
+ */
+class LogEvent {
   /**
-     * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+     * Creates a new log event instance.
      */
-  if (typeof Object.assign !== 'function') {
-    Object.assign = function (target, varArgs) {
-      if (target == null) {
-        throw new TypeError('Cannot convert undefined or null to object');
-      }
-      const to = Object(target);
-      for (let index = 1; index < arguments.length; index++) {
-        const nextSource = arguments[index];
-        if (nextSource != null) {
-          for (const nextKey in nextSource) {
-            if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
-              to[nextKey] = nextSource[nextKey];
-            }
-          }
-        }
-      }
-      return to;
-    };
-  }
+  constructor(timestamp, logLevel, messageTemplate, properties, error) {
+    this.timestamp = timestamp;
+    this.severity = logLevel;
+    this.messageTemplate = messageTemplate;
+    this.properties = properties || {};
+    this.error = error || null;
+    this.message = this.messageTemplate ? this.messageTemplate.render(this.properties) : null;
+    switch (this.severity) {
+      case 1:
+        this.level = 'fatal';
+        break;
+      case 3:
+        this.level = 'error';
+        break;
+      case 7:
+        this.level = 'warning';
+        break;
+      case 15:
+        this.level = 'information';
+        break;
+      case 31:
+        this.level = 'debug';
+        break;
+      case 63:
+        this.level = 'verbose';
+        break;
+      default:
+        this.level = null;
+        break;
 
-  /**
-     * Represents the severity level of a log event.
-     */
-
-  (function (LogEventLevel) {
-    LogEventLevel[LogEventLevel.off = 0] = 'off';
-    LogEventLevel[LogEventLevel.fatal = 1] = 'fatal';
-    LogEventLevel[LogEventLevel.error = 3] = 'error';
-    LogEventLevel[LogEventLevel.warning = 7] = 'warning';
-    LogEventLevel[LogEventLevel.information = 15] = 'information';
-    LogEventLevel[LogEventLevel.debug = 31] = 'debug';
-    LogEventLevel[LogEventLevel.verbose = 63] = 'verbose';
-  }(exports.LogEventLevel || (exports.LogEventLevel = {})));
-  /**
-     * Checks if a log event level includes the target log event level.
-     * @param {LogEventLevel} level The level to check.
-     * @param {LogEventLevel} target The target level.
-     * @returns True if the checked level contains the target level, or if the checked level is undefined.
-     */
-  function isEnabled(level, target) {
-    return typeof level === 'undefined' || (level & target) === target;
-  }
-  /**
-     * Represents a log event.
-     */
-  const LogEvent = /** @class */ (function () {
-    /**
-         * Creates a new log event instance.
-         */
-    function LogEvent(timestamp, level, messageTemplate, properties, error) {
-      this.timestamp = timestamp;
-      this.level = level;
-      this.messageTemplate = messageTemplate;
-      this.properties = properties || {};
-      this.error = error || null;
-      this.message = this.messageTemplate ? this.messageTemplate.render(this.properties) : null;
-      switch (this.level) {
-        case 1:
-          this.severity = 'Fatal';
-          break;
-        case 3:
-          this.severity = 'Error';
-          break;
-        case 7:
-          this.severity = 'Warning';
-          break;
-        case 15:
-          this.severity = 'Information';
-          break;
-        case 31:
-          this.severity = 'Debug';
-          break;
-        case 63:
-          this.severity = 'Verbose';
-          break;
-        default:
-          this.severity = null;
-          break;
-
-      }
     }
-    return LogEvent;
-  }());
+  }
+}
 
-  const tokenizer = /\{@?\w+}/g;
+const tokenizer = /\{@?\w+}/g;
+/**
+ * Represents a message template that can be rendered into a log message.
+ */
+class MessageTemplate {
   /**
-     * Represents a message template that can be rendered into a log message.
+     * Creates a new MessageTemplate instance with the given template.
      */
-  const MessageTemplate = /** @class */ (function () {
-    /**
-         * Creates a new MessageTemplate instance with the given template.
-         */
-    function MessageTemplate(messageTemplate) {
-      if (messageTemplate === null || !messageTemplate.length) {
-        throw new Error('Argument "messageTemplate" is required.');
-      }
-      this.raw = messageTemplate;
-      this.tokens = this.tokenize(messageTemplate);
+  constructor(messageTemplate) {
+    if (messageTemplate === null || !messageTemplate.length) {
+      throw new Error('Argument "messageTemplate" is required.');
     }
-    /**
-         * Renders this template using the given properties.
-         * @param {Object} properties Object containing the properties.
-         * @returns Rendered message.
-         */
-    MessageTemplate.prototype.render = function (properties) {
-      if (!this.tokens.length) {
-        return this.raw;
-      }
-      properties = properties || {};
-      const result = [];
-      for (let i = 0; i < this.tokens.length; ++i) {
-        const token = this.tokens[i];
-        if (typeof token.name === 'string') {
-          if (properties.hasOwnProperty(token.name)) {
-            result.push(this.toText(properties[token.name]));
-          } else {
-            result.push(token.raw);
-          }
+    this.raw = messageTemplate;
+    this.tokens = this.tokenize(messageTemplate);
+  }
+
+  /**
+     * Renders this template using the given properties.
+     * @param {Object} properties Object containing the properties.
+     * @returns Rendered message.
+     */
+  render(properties) {
+    if (!this.tokens.length) {
+      return this.raw;
+    }
+    properties = properties || {};
+    const result = [];
+    for (let i = 0; i < this.tokens.length; ++i) {
+      const token = this.tokens[i];
+      if (typeof token.name === 'string') {
+        if (properties.hasOwnProperty(token.name)) {
+          result.push(this.toText(properties[token.name]));
         } else {
-          result.push(token.text);
+          result.push(token.raw);
         }
+      } else {
+        result.push(token.text);
       }
-      return result.join('');
-    };
-    /**
-         * Binds the given set of args to their matching tokens.
-         * @param {any} positionalArgs Arguments.
-         * @returns Object containing the properties.
-         */
-    MessageTemplate.prototype.bindProperties = function (positionalArgs) {
-      const result = {};
-      let nextArg = 0;
-      for (let i = 0; i < this.tokens.length && nextArg < positionalArgs.length; ++i) {
-        const token = this.tokens[i];
-        if (typeof token.name === 'string') {
-          const p = positionalArgs[nextArg];
-          result[token.name] = this.capture(p, token.destructure);
-          nextArg++;
-        }
-      }
-      while (nextArg < positionalArgs.length) {
-        const arg = positionalArgs[nextArg];
-        if (typeof arg !== 'undefined') {
-          result[`a${nextArg}`] = this.capture(arg);
-        }
+    }
+    return result.join('');
+  }
+
+  /**
+     * Binds the given set of args to their matching tokens.
+     * @param {any} positionalArgs Arguments.
+     * @returns Object containing the properties.
+     */
+  bindProperties(positionalArgs) {
+    const result = {};
+    let nextArg = 0;
+    for (let i = 0; i < this.tokens.length && nextArg < positionalArgs.length; ++i) {
+      const token = this.tokens[i];
+      if (typeof token.name === 'string') {
+        const p = positionalArgs[nextArg];
+        result[token.name] = this.capture(p, token.destructure);
         nextArg++;
       }
-      return result;
-    };
-    MessageTemplate.prototype.tokenize = function (template) {
-      const tokens = [];
-      let result;
-      let textStart;
-      while ((result = tokenizer.exec(template)) !== null) {
-        if (result.index !== textStart) {
-          tokens.push({ text: template.slice(textStart, result.index) });
-        }
-        let destructure = false;
-        let token = result[0].slice(1, -1);
-        if (token.indexOf('@') === 0) {
-          token = token.slice(1);
-          destructure = true;
-        }
-        tokens.push({
-          name: token,
-          destructure,
-          raw: result[0],
-        });
-        textStart = tokenizer.lastIndex;
-      }
-      if (textStart >= 0 && textStart < template.length) {
-        tokens.push({ text: template.slice(textStart) });
-      }
-      return tokens;
-    };
-    MessageTemplate.prototype.toText = function (property) {
-      if (typeof property === 'undefined') {
-        return 'undefined';
-      }
-      if (property === null) {
-        return 'null';
-      }
-      if (typeof property === 'string') {
-        return property;
-      }
-      if (typeof property === 'number') {
-        return property.toString();
-      }
-      if (typeof property === 'boolean') {
-        return property.toString();
-      }
-      if (typeof property.toISOString === 'function') {
-        return property.toISOString();
-      }
-      if (typeof property === 'object') {
-        let s = JSON.stringify(property);
-        if (s.length > 70) {
-          s = `${s.slice(0, 67)}...`;
-        }
-        return s;
-      }
-      return property.toString();
-    };
-
-    MessageTemplate.prototype.capture = function (property, destructure) {
-      if (typeof property === 'function') {
-        return property.toString();
-      }
-      if (typeof property === 'object') {
-        // null value will be automatically stringified as "null", in properties it will be as null
-        // otherwise it will throw an error
-        if (property === null) {
-          return property;
-        }
-        // Could use instanceof Date, but this way will be kinder
-        // to values passed from other contexts...
-        if (destructure || typeof property.toISOString === 'function') {
-          return property;
-        }
-        return property.toString();
-      }
-      return property;
-    };
-    return MessageTemplate;
-  }());
-
-  /**
-     * Logs events.
-     */
-  const Logger = /** @class */ (function () {
-    /**
-         * Creates a new logger instance using the specified pipeline.
-         */
-    function Logger(pipeline, suppressErrors) {
-      this.suppressErrors = true;
-      this.pipeline = pipeline;
-      this.suppressErrors = typeof suppressErrors === 'undefined' || suppressErrors;
     }
-    Logger.prototype.fatal = function (errorOrMessageTemplate) {
-      const properties = [];
-      for (let _i = 1; _i < arguments.length; _i++) {
-        properties[_i - 1] = arguments[_i];
+    while (nextArg < positionalArgs.length) {
+      const arg = positionalArgs[nextArg];
+      if (typeof arg !== 'undefined') {
+        result[`a${nextArg}`] = this.capture(arg);
       }
-      try {
-        if (errorOrMessageTemplate instanceof Error) {
-          this.write(exports.LogEventLevel.fatal, properties[0], properties.slice(1), errorOrMessageTemplate);
-        } else {
-          this.write(exports.LogEventLevel.fatal, errorOrMessageTemplate, properties);
-        }
-      } catch (error) {
-        if (!this.suppressErrors) {
-          throw error;
-        }
-      }
-    };
-    Logger.prototype.error = function (errorOrMessageTemplate) {
-      const properties = [];
-      for (let _i = 1; _i < arguments.length; _i++) {
-        properties[_i - 1] = arguments[_i];
-      }
-      try {
-        if (errorOrMessageTemplate instanceof Error) {
-          this.write(exports.LogEventLevel.error, properties[0], properties.slice(1), errorOrMessageTemplate);
-        } else {
-          this.write(exports.LogEventLevel.error, errorOrMessageTemplate, properties);
-        }
-      } catch (error) {
-        if (!this.suppressErrors) {
-          throw error;
-        }
-      }
-    };
-    Logger.prototype.warn = function (errorOrMessageTemplate) {
-      const properties = [];
-      for (let _i = 1; _i < arguments.length; _i++) {
-        properties[_i - 1] = arguments[_i];
-      }
-      try {
-        if (errorOrMessageTemplate instanceof Error) {
-          this.write(exports.LogEventLevel.warning, properties[0], properties.slice(1), errorOrMessageTemplate);
-        } else {
-          this.write(exports.LogEventLevel.warning, errorOrMessageTemplate, properties);
-        }
-      } catch (error) {
-        if (!this.suppressErrors) {
-          throw error;
-        }
-      }
-    };
-    Logger.prototype.info = function (errorOrMessageTemplate) {
-      const properties = [];
-      for (let _i = 1; _i < arguments.length; _i++) {
-        properties[_i - 1] = arguments[_i];
-      }
-      try {
-        if (errorOrMessageTemplate instanceof Error) {
-          this.write(exports.LogEventLevel.information, properties[0], properties.slice(1), errorOrMessageTemplate);
-        } else {
-          this.write(exports.LogEventLevel.information, errorOrMessageTemplate, properties);
-        }
-      } catch (error) {
-        if (!this.suppressErrors) {
-          throw error;
-        }
-      }
-    };
-    Logger.prototype.debug = function (errorOrMessageTemplate) {
-      const properties = [];
-      for (let _i = 1; _i < arguments.length; _i++) {
-        properties[_i - 1] = arguments[_i];
-      }
-      try {
-        if (errorOrMessageTemplate instanceof Error) {
-          this.write(exports.LogEventLevel.debug, properties[0], properties.slice(1), errorOrMessageTemplate);
-        } else {
-          this.write(exports.LogEventLevel.debug, errorOrMessageTemplate, properties);
-        }
-      } catch (error) {
-        if (!this.suppressErrors) {
-          throw error;
-        }
-      }
-    };
-    Logger.prototype.verbose = function (errorOrMessageTemplate) {
-      const properties = [];
-      for (let _i = 1; _i < arguments.length; _i++) {
-        properties[_i - 1] = arguments[_i];
-      }
-      try {
-        if (errorOrMessageTemplate instanceof Error) {
-          this.write(exports.LogEventLevel.verbose, properties[0], properties.slice(1), errorOrMessageTemplate);
-        } else {
-          this.write(exports.LogEventLevel.verbose, errorOrMessageTemplate, properties);
-        }
-      } catch (error) {
-        if (!this.suppressErrors) {
-          throw error;
-        }
-      }
-    };
-    /**
-         * Flushes the pipeline of this logger.
-         * @returns A {Promise<any>} that will resolve when the pipeline has been flushed.
-         */
-    Logger.prototype.flush = function () {
-      return this.suppressErrors
-        ? this.pipeline.flush().catch(() => { })
-        : this.pipeline.flush();
-    };
-    /**
-         * Emits events through this logger's pipeline.
-         */
-    Logger.prototype.emit = function (events) {
-      try {
-        this.pipeline.emit(events);
-        return events;
-      } catch (error) {
-        if (!this.suppressErrors) {
-          throw error;
-        }
-      }
-    };
-    Logger.prototype.write = function (level, rawMessageTemplate, unboundProperties, error) {
-      const messageTemplate = new MessageTemplate(rawMessageTemplate);
-      const properties = messageTemplate.bindProperties(unboundProperties);
-      const logEvent = new LogEvent(new Date().toISOString(), level, messageTemplate, properties, error);
-      this.pipeline.emit([logEvent]);
-    };
-    return Logger;
-  }());
-
-  const ConsoleSink = /** @class */ (function () {
-    function ConsoleSink(options) {
-      this.options = options || {};
-      const internalConsole = this.options.console || typeof console !== 'undefined' && console || null;
-      const stub = function () { };
-      // console.debug is no-op for Node, so use console.log instead.
-      const nodeConsole = !this.options.console && typeof process !== 'undefined' && process.versions.node;
-      this.console = {
-        error: (internalConsole && (internalConsole.error || internalConsole.log)) || stub,
-        warn: (internalConsole && (internalConsole.warn || internalConsole.log)) || stub,
-        info: (internalConsole && (internalConsole.info || internalConsole.log)) || stub,
-        debug: (internalConsole && ((!nodeConsole && internalConsole.debug) || internalConsole.log)) || stub,
-        log: (internalConsole && internalConsole.log) || stub,
-      };
+      nextArg++;
     }
-    ConsoleSink.prototype.emit = function (events) {
-      for (let i = 0; i < events.length; ++i) {
-        const e = events[i];
-        if (!isEnabled(this.options.restrictedToMinimumLevel, e.level)) { continue; }
-        switch (e.level) {
-          case exports.LogEventLevel.fatal:
-            this.writeToConsole(this.console.error, 'Fatal', e);
-            break;
-          case exports.LogEventLevel.error:
-            this.writeToConsole(this.console.error, 'Error', e);
-            break;
-          case exports.LogEventLevel.warning:
-            this.writeToConsole(this.console.warn, 'Warning', e);
-            break;
-          case exports.LogEventLevel.information:
-            this.writeToConsole(this.console.info, 'Information', e);
-            break;
-          case exports.LogEventLevel.debug:
-            this.writeToConsole(this.console.debug, 'Debug', e);
-            break;
-          case exports.LogEventLevel.verbose:
-            this.writeToConsole(this.console.debug, 'Verbose', e);
-            break;
-          default:
-            this.writeToConsole(this.console.log, 'Log', e);
-            break;
-        }
-      }
-    };
-    ConsoleSink.prototype.flush = function () {
-      return Promise.resolve();
-    };
-    ConsoleSink.prototype.writeToConsole = function (logMethod, prefix, e) {
-      let output = `[${prefix}] ${e.messageTemplate.render(e.properties)}`;
-      if (this.options.includeTimestamps) {
-        output = `${e.timestamp} ${output}`;
-      }
-      const values = [];
-      if (this.options.includeProperties) {
-        for (const key in e.properties) {
-          if (e.properties.hasOwnProperty(key)) {
-            values.push(e.properties[key]);
-          }
-        }
-      }
-      if (e.error instanceof Error) {
-        values.push('\n', e.error);
-      }
-      logMethod.apply(void 0, [output].concat(values));
-    };
-    return ConsoleSink;
-  }());
-
-  const defaultBatchedSinkOptions = {
-    maxSize: 100,
-    period: 5,
-    durableStore: null,
-  };
-  const BatchedSink = /** @class */ (function () {
-    function BatchedSink(innerSink, options) {
-      this.durableStorageKey = 'structured-log-batched-sink-durable-cache';
-      this.innerSink = innerSink || null;
-      this.options = { ...defaultBatchedSinkOptions, ...(options || {}) };
-      this.batchedEvents = [];
-      this.cycleBatch();
-      if (this.options.durableStore) {
-        let initialBatch = [];
-        for (const key in this.options.durableStore) {
-          if (key.indexOf(this.durableStorageKey) === 0) {
-            const storedEvents = JSON.parse(this.options.durableStore.getItem(key))
-              .map((e) => {
-                e.messageTemplate = new MessageTemplate(e.messageTemplate.raw);
-                return e;
-              });
-            initialBatch = initialBatch.concat(storedEvents);
-            this.options.durableStore.removeItem(key);
-          }
-        }
-        this.emit(initialBatch);
-      }
-    }
-    BatchedSink.prototype.emit = function (events) {
-      if (this.batchedEvents.length + events.length <= this.options.maxSize) {
-        (_a = this.batchedEvents).push.apply(_a, events);
-        this.storeEvents();
-      } else {
-        let cursor = this.options.maxSize - this.batchedEvents.length;
-        (_b = this.batchedEvents).push.apply(_b, events.slice(0, cursor));
-        this.storeEvents();
-        while (cursor < events.length) {
-          this.cycleBatch();
-          (_c = this.batchedEvents).push.apply(_c, events.slice(cursor, cursor += this.options.maxSize));
-          this.storeEvents();
-        }
-      }
-      return events;
-      let _a; let _b; let
-        _c;
-    };
-    BatchedSink.prototype.flush = function () {
-      this.cycleBatch();
-      const corePromise = this.flushCore();
-      return corePromise instanceof Promise ? corePromise : Promise.resolve();
-    };
-    BatchedSink.prototype.emitCore = function (events) {
-      return this.innerSink.emit(events);
-    };
-    BatchedSink.prototype.flushCore = function () {
-      return this.innerSink.flush();
-    };
-    BatchedSink.prototype.cycleBatch = function () {
-      const _this = this;
-      clearTimeout(this.batchTimeout);
-      if (this.batchedEvents.length) {
-        const emitPromise = this.emitCore(this.batchedEvents.slice(0));
-        if (this.options.durableStore) {
-          const previousBatchKey_1 = this.batchKey;
-          (emitPromise instanceof Promise ? emitPromise : Promise.resolve())
-            .then(() => _this.options.durableStore.removeItem(previousBatchKey_1));
-        }
-        this.batchedEvents.length = 0;
-      }
-      this.batchKey = `${this.durableStorageKey}-${new Date().getTime()}`;
-      if (!isNaN(this.options.period) && this.options.period > 0) {
-        this.batchTimeout = setTimeout(() => _this.cycleBatch(), this.options.period * 1000);
-      }
-    };
-    BatchedSink.prototype.storeEvents = function () {
-      if (this.options.durableStore) {
-        this.options.durableStore.setItem(this.batchKey, JSON.stringify(this.batchedEvents));
-      }
-    };
-    return BatchedSink;
-  }());
-
-  const FilterStage = /** @class */ (function () {
-    function FilterStage(predicate) {
-      this.predicate = predicate;
-    }
-    FilterStage.prototype.emit = function (events) {
-      return events.filter(this.predicate);
-    };
-    FilterStage.prototype.flush = function () {
-      return Promise.resolve();
-    };
-    return FilterStage;
-  }());
-
-  /**
-     * Allows dynamic control of the logging level.
-     */
-  const DynamicLevelSwitch = /** @class */ (function () {
-    function DynamicLevelSwitch() {
-      this.minLevel = null;
-      /**
-             * Gets or sets a delegate that can be called when the pipeline needs to be flushed.
-             * This should generally not be modified, as it will be provided by the pipeline stage.
-             */
-      this.flushDelegate = function () { return Promise.resolve(); };
-    }
-    DynamicLevelSwitch.prototype.fatal = function () {
-      const _this = this;
-      return this.flushDelegate().then(() => _this.minLevel = exports.LogEventLevel.fatal);
-    };
-    DynamicLevelSwitch.prototype.error = function () {
-      const _this = this;
-      return this.flushDelegate().then(() => _this.minLevel = exports.LogEventLevel.error);
-    };
-    DynamicLevelSwitch.prototype.warning = function () {
-      const _this = this;
-      return this.flushDelegate().then(() => _this.minLevel = exports.LogEventLevel.warning);
-    };
-    DynamicLevelSwitch.prototype.information = function () {
-      const _this = this;
-      return this.flushDelegate().then(() => _this.minLevel = exports.LogEventLevel.information);
-    };
-    DynamicLevelSwitch.prototype.debug = function () {
-      const _this = this;
-      return this.flushDelegate().then(() => _this.minLevel = exports.LogEventLevel.debug);
-    };
-    DynamicLevelSwitch.prototype.verbose = function () {
-      const _this = this;
-      return this.flushDelegate().then(() => _this.minLevel = exports.LogEventLevel.verbose);
-    };
-    DynamicLevelSwitch.prototype.off = function () {
-      const _this = this;
-      return this.flushDelegate().then(() => _this.minLevel = exports.LogEventLevel.off);
-    };
-    DynamicLevelSwitch.prototype.isEnabled = function (level) {
-      return this.minLevel === null || isEnabled(this.minLevel, level);
-    };
-    return DynamicLevelSwitch;
-  }());
-  const DynamicLevelSwitchStage = /** @class */ (function (_super) {
-    __extends(DynamicLevelSwitchStage, _super);
-    function DynamicLevelSwitchStage(dynamicLevelSwitch) {
-      const _this = _super.call(this, (e) => dynamicLevelSwitch.isEnabled(e.level)) || this;
-      _this.dynamicLevelSwitch = dynamicLevelSwitch;
-      return _this;
-    }
-    /**
-         * Sets a delegate that can be called when the pipeline needs to be flushed.
-         */
-    DynamicLevelSwitchStage.prototype.setFlushDelegate = function (flushDelegate) {
-      this.dynamicLevelSwitch.flushDelegate = flushDelegate;
-    };
-    return DynamicLevelSwitchStage;
-  }(FilterStage));
-
-  const Pipeline = /** @class */ (function () {
-    function Pipeline() {
-      this.stages = [];
-      this.eventQueue = [];
-      this.flushInProgress = false;
-    }
-    /**
-         * Adds a stage to the end of the pipeline.
-         * @param {PipelineStage} stage The pipeline stage to add.
-         */
-    Pipeline.prototype.addStage = function (stage) {
-      this.stages.push(stage);
-    };
-    /**
-         * Emits events through the pipeline. If a flush is currently in progress, the events will be queued and will been
-         * sent through the pipeline once the flush is complete.
-         * @param {LogEvent[]} events The events to emit.
-         */
-    Pipeline.prototype.emit = function (events) {
-      const _this = this;
-      if (this.flushInProgress) {
-        this.eventQueue = this.eventQueue.concat(events);
-        return this.flushPromise;
-      }
-
-      if (!this.stages.length || !events.length) {
-        return Promise.resolve();
-      }
-      let promise = Promise.resolve(this.stages[0].emit(events));
-      const _loop_1 = function (i) {
-        promise = promise.then((events) => _this.stages[i].emit(events));
-      };
-      for (let i = 1; i < this.stages.length; ++i) {
-        _loop_1(i);
-      }
-      return promise;
-    };
-    /**
-         * Flushes events through the pipeline.
-         * @returns A {Promise<any>} that resolves when all events have been flushed and the pipeline can accept new events.
-         */
-    Pipeline.prototype.flush = function () {
-      const _this = this;
-      if (this.flushInProgress) {
-        return this.flushPromise;
-      }
-      this.flushInProgress = true;
-      return this.flushPromise = Promise.resolve()
-        .then(() => {
-          if (_this.stages.length === 0) {
-            return;
-          }
-          let promise = _this.stages[0].flush();
-          const _loop_2 = function (i) {
-            promise = promise.then(() => _this.stages[i].flush());
-          };
-          for (let i = 1; i < _this.stages.length; ++i) {
-            _loop_2(i);
-          }
-          return promise;
-        })
-        .then(() => {
-          _this.flushInProgress = false;
-          const queuedEvents = _this.eventQueue.slice();
-          _this.eventQueue = [];
-          return _this.emit(queuedEvents);
-        });
-    };
-    return Pipeline;
-  }());
-
-  const SinkStage = /** @class */ (function () {
-    function SinkStage(sink) {
-      this.sink = sink;
-    }
-    SinkStage.prototype.emit = function (events) {
-      this.sink.emit(events);
-      return events;
-    };
-    SinkStage.prototype.flush = function () {
-      return this.sink.flush();
-    };
-    return SinkStage;
-  }());
-
-  const deepClone = function (obj) { return JSON.parse(JSON.stringify(obj)); };
-  const EnrichStage = /** @class */ (function () {
-    function EnrichStage(enricher) {
-      this.enricher = enricher;
-    }
-    EnrichStage.prototype.emit = function (events) {
-      for (let i = 0; i < events.length; ++i) {
-        const extraProperties = this.enricher instanceof Function
-          ? this.enricher(deepClone(events[i].properties))
-          : this.enricher;
-        Object.assign(events[i].properties, extraProperties);
-      }
-      return events;
-    };
-    EnrichStage.prototype.flush = function () {
-      return Promise.resolve();
-    };
-    return EnrichStage;
-  }());
-
-  /**
-     * Configures pipelines for new logger instances.
-     */
-  const LoggerConfiguration = /** @class */ (function () {
-    function LoggerConfiguration() {
-      const _this = this;
-      /**
-             * Sets the minimum level for any subsequent stages in the pipeline.
-             */
-      this.minLevel = Object.assign((levelOrSwitch) => {
-        if (typeof levelOrSwitch === 'undefined' || levelOrSwitch === null) {
-          throw new TypeError('Argument "levelOrSwitch" is not a valid LogEventLevel value or DynamicLevelSwitch instance.');
-        } else if (levelOrSwitch instanceof DynamicLevelSwitch) {
-          const switchStage = new DynamicLevelSwitchStage(levelOrSwitch);
-          const { flush } = _this.pipeline;
-          switchStage.setFlushDelegate(() => _this.pipeline.flush());
-          _this.pipeline.addStage(switchStage);
-          return _this;
-        } else if (typeof levelOrSwitch === 'string') {
-          const level_1 = exports.LogEventLevel[levelOrSwitch.toLowerCase()];
-          if (typeof level_1 === 'undefined' || level_1 === null) {
-            throw new TypeError('Argument "levelOrSwitch" is not a valid LogEventLevel value.');
-          }
-          return _this.filter((e) => isEnabled(level_1, e.level));
-        } else {
-          return _this.filter((e) => isEnabled(levelOrSwitch, e.level));
-        }
-      }, {
-        fatal() { return _this.minLevel(exports.LogEventLevel.fatal); },
-        error() { return _this.minLevel(exports.LogEventLevel.error); },
-        warning() { return _this.minLevel(exports.LogEventLevel.warning); },
-        information() { return _this.minLevel(exports.LogEventLevel.information); },
-        debug() { return _this.minLevel(exports.LogEventLevel.debug); },
-        verbose() { return _this.minLevel(exports.LogEventLevel.verbose); },
-      });
-      this.pipeline = new Pipeline();
-      this._suppressErrors = true;
-    }
-    /**
-         * Adds a sink to the pipeline.
-         * @param {Sink} sink The sink to add.
-         */
-    LoggerConfiguration.prototype.writeTo = function (sink) {
-      this.pipeline.addStage(new SinkStage(sink));
-      return this;
-    };
-    /**
-         * Adds a filter to the pipeline.
-         * @param {(e: LogEvent) => boolean} predicate Filter predicate to use.
-         */
-    LoggerConfiguration.prototype.filter = function (predicate) {
-      if (predicate instanceof Function) {
-        this.pipeline.addStage(new FilterStage(predicate));
-      } else {
-        throw new TypeError('Argument "predicate" must be a function.');
-      }
-      return this;
-    };
-    /**
-         * Adds an enricher to the pipeline.
-         */
-    LoggerConfiguration.prototype.enrich = function (enricher) {
-      if (enricher instanceof Function || enricher instanceof Object) {
-        this.pipeline.addStage(new EnrichStage(enricher));
-      } else {
-        throw new TypeError('Argument "enricher" must be either a function or an object.');
-      }
-      return this;
-    };
-    /**
-         * Enable or disable error suppression.
-         */
-    LoggerConfiguration.prototype.suppressErrors = function (suppress) {
-      this._suppressErrors = typeof suppress === 'undefined' || !!suppress;
-      return this;
-    };
-    /**
-         * Creates a new logger instance based on this configuration.
-         */
-    LoggerConfiguration.prototype.create = function () {
-      return new Logger(this.pipeline, this._suppressErrors);
-    };
-    return LoggerConfiguration;
-  }());
-
-  function configure() {
-    return new LoggerConfiguration();
+    return result;
   }
 
-  exports.configure = configure;
-  exports.LoggerConfiguration = LoggerConfiguration;
-  exports.Logger = Logger;
-  exports.ConsoleSink = ConsoleSink;
-  exports.BatchedSink = BatchedSink;
-  exports.DynamicLevelSwitch = DynamicLevelSwitch;
+  tokenize(template) {
+    const tokens = [];
+    let result;
+    let textStart;
+    while ((result = tokenizer.exec(template)) !== null) {
+      if (result.index !== textStart) {
+        tokens.push({ text: template.slice(textStart, result.index) });
+      }
+      let destructure = false;
+      let token = result[0].slice(1, -1);
+      if (token.indexOf('@') === 0) {
+        token = token.slice(1);
+        destructure = true;
+      }
+      tokens.push({
+        name: token,
+        destructure,
+        raw: result[0],
+      });
+      textStart = tokenizer.lastIndex;
+    }
+    if (textStart >= 0 && textStart < template.length) {
+      tokens.push({ text: template.slice(textStart) });
+    }
+    return tokens;
+  }
 
-  Object.defineProperty(exports, '__esModule', { value: true });
-})));
-// # sourceMappingURL=structured-log.js.map
+  toText(property) {
+    if (typeof property === 'undefined') {
+      return 'undefined';
+    }
+    if (property === null) {
+      return 'null';
+    }
+    if (typeof property === 'string') {
+      return property;
+    }
+    if (typeof property === 'number') {
+      return property.toString();
+    }
+    if (typeof property === 'boolean') {
+      return property.toString();
+    }
+    if (typeof property.toISOString === 'function') {
+      return property.toISOString();
+    }
+    if (typeof property === 'object') {
+      let s = JSON.stringify(property);
+      if (s.length > 70) {
+        s = `${s.slice(0, 67)}...`;
+      }
+      return s;
+    }
+    return property.toString();
+  }
+
+  capture(property, destructure) {
+    if (typeof property === 'function') {
+      return property.toString();
+    }
+    if (typeof property === 'object') {
+      // null value will be automatically stringified as "null", in properties it will be as null
+      // otherwise it will throw an error
+      if (property === null) {
+        return property;
+      }
+      // Could use instanceof Date, but this way will be kinder
+      // to values passed from other contexts...
+      if (destructure || typeof property.toISOString === 'function') {
+        return property;
+      }
+      return property.toString();
+    }
+    return property;
+  }
+}
+
+/**
+ * Logs events.
+ */
+class Logger {
+  /**
+     * Creates a new logger instance using the specified pipeline.
+     */
+  constructor(pipeline, suppressErrors) {
+    this.suppressErrors = true;
+    this.pipeline = pipeline;
+    this.suppressErrors = typeof suppressErrors === 'undefined' || suppressErrors;
+  }
+
+  fatal(errorOrMessageTemplate, ...properties) {
+    try {
+      if (errorOrMessageTemplate instanceof Error) {
+        this.write(LogEventLevel.fatal, properties[0], properties.slice(1), errorOrMessageTemplate);
+      } else {
+        this.write(LogEventLevel.fatal, errorOrMessageTemplate, properties);
+      }
+    } catch (error) {
+      if (!this.suppressErrors) {
+        throw error;
+      }
+    }
+  }
+
+  error(errorOrMessageTemplate, ...properties) {
+    try {
+      if (errorOrMessageTemplate instanceof Error) {
+        this.write(LogEventLevel.error, properties[0], properties.slice(1), errorOrMessageTemplate);
+      } else {
+        this.write(LogEventLevel.error, errorOrMessageTemplate, properties);
+      }
+    } catch (error) {
+      if (!this.suppressErrors) {
+        throw error;
+      }
+    }
+  }
+
+  warn(errorOrMessageTemplate, ...properties) {
+    try {
+      if (errorOrMessageTemplate instanceof Error) {
+        this.write(LogEventLevel.warning, properties[0], properties.slice(1), errorOrMessageTemplate);
+      } else {
+        this.write(LogEventLevel.warning, errorOrMessageTemplate, properties);
+      }
+    } catch (error) {
+      if (!this.suppressErrors) {
+        throw error;
+      }
+    }
+  }
+
+  info(errorOrMessageTemplate, ...properties) {
+    try {
+      if (errorOrMessageTemplate instanceof Error) {
+        this.write(LogEventLevel.information, properties[0], properties.slice(1), errorOrMessageTemplate);
+      } else {
+        this.write(LogEventLevel.information, errorOrMessageTemplate, properties);
+      }
+    } catch (error) {
+      if (!this.suppressErrors) {
+        throw error;
+      }
+    }
+  }
+
+  debug(errorOrMessageTemplate, ...properties) {
+    try {
+      if (errorOrMessageTemplate instanceof Error) {
+        this.write(LogEventLevel.debug, properties[0], properties.slice(1), errorOrMessageTemplate);
+      } else {
+        this.write(LogEventLevel.debug, errorOrMessageTemplate, properties);
+      }
+    } catch (error) {
+      if (!this.suppressErrors) {
+        throw error;
+      }
+    }
+  }
+
+  verbose(errorOrMessageTemplate, ...properties) {
+    try {
+      if (errorOrMessageTemplate instanceof Error) {
+        this.write(LogEventLevel.verbose, properties[0], properties.slice(1), errorOrMessageTemplate);
+      } else {
+        this.write(LogEventLevel.verbose, errorOrMessageTemplate, properties);
+      }
+    } catch (error) {
+      if (!this.suppressErrors) {
+        throw error;
+      }
+    }
+  }
+
+  /**
+     * Flushes the pipeline of this logger.
+     * @returns A {Promise<any>} that will resolve when the pipeline has been flushed.
+     */
+  flush() {
+    return this.suppressErrors
+      ? this.pipeline.flush().catch(() => { })
+      : this.pipeline.flush();
+  }
+
+  /**
+     * Emits events through this logger's pipeline.
+     */
+  emit(events) {
+    try {
+      this.pipeline.emit(events);
+      return events;
+    } catch (error) {
+      if (!this.suppressErrors) {
+        throw error;
+      }
+    }
+  }
+
+  write(level, rawMessageTemplate, unboundProperties, error) {
+    const messageTemplate = new MessageTemplate(rawMessageTemplate);
+    const properties = messageTemplate.bindProperties(unboundProperties);
+    const logEvent = new LogEvent(new Date().toISOString(), level, messageTemplate, properties, error);
+    this.pipeline.emit([logEvent]);
+  }
+}
+
+class ConsoleSink {
+  constructor(options) {
+    this.options = options || {};
+    const internalConsole = this.options.console || typeof console !== 'undefined' && console || null;
+    const stub = function () { };
+    // console.debug is no-op for Node, so use console.log instead.
+    const nodeConsole = !this.options.console && typeof process !== 'undefined' && process.versions.node;
+    this.console = {
+      error: (internalConsole && (internalConsole.error || internalConsole.log)) || stub,
+      warn: (internalConsole && (internalConsole.warn || internalConsole.log)) || stub,
+      info: (internalConsole && (internalConsole.info || internalConsole.log)) || stub,
+      debug: (internalConsole && ((!nodeConsole && internalConsole.debug) || internalConsole.log)) || stub,
+      log: (internalConsole && internalConsole.log) || stub,
+    };
+  }
+
+  emit(events) {
+    for (let i = 0; i < events.length; ++i) {
+      const e = events[i];
+      if (!isEnabled(this.options.restrictedToMinimumLevel, e.level)) { continue; }
+      switch (e.level) {
+        case LogEventLevel.fatal:
+          this.writeToConsole(this.console.error, 'Fatal', e);
+          break;
+        case LogEventLevel.error:
+          this.writeToConsole(this.console.error, 'Error', e);
+          break;
+        case LogEventLevel.warning:
+          this.writeToConsole(this.console.warn, 'Warning', e);
+          break;
+        case LogEventLevel.information:
+          this.writeToConsole(this.console.info, 'Information', e);
+          break;
+        case LogEventLevel.debug:
+          this.writeToConsole(this.console.debug, 'Debug', e);
+          break;
+        case LogEventLevel.verbose:
+          this.writeToConsole(this.console.debug, 'Verbose', e);
+          break;
+        default:
+          this.writeToConsole(this.console.log, 'Log', e);
+          break;
+      }
+    }
+  }
+
+  flush() {
+    return Promise.resolve();
+  }
+
+  writeToConsole(logMethod, prefix, e) {
+    let output = `[${prefix}] ${e.messageTemplate.render(e.properties)}`;
+    if (this.options.includeTimestamps) {
+      output = `${e.timestamp} ${output}`;
+    }
+    const values = [];
+    if (this.options.includeProperties) {
+      for (const key in e.properties) {
+        if (e.properties.hasOwnProperty(key)) {
+          values.push(e.properties[key]);
+        }
+      }
+    }
+    if (e.error instanceof Error) {
+      values.push('\n', e.error);
+    }
+    logMethod(output, ...values);
+  }
+}
+
+const defaultBatchedSinkOptions = {
+  maxSize: 100,
+  period: 5,
+  durableStore: null,
+};
+class BatchedSink {
+  constructor(innerSink, options) {
+    this.durableStorageKey = 'structured-log-batched-sink-durable-cache';
+    this.innerSink = innerSink || null;
+    this.options = { ...defaultBatchedSinkOptions, ...(options || {}) };
+    this.batchedEvents = [];
+    this.cycleBatch();
+    if (this.options.durableStore) {
+      let initialBatch = [];
+      for (const key in this.options.durableStore) {
+        if (key.indexOf(this.durableStorageKey) === 0) {
+          const storedEvents = JSON.parse(this.options.durableStore.getItem(key))
+            .map((e) => {
+              e.messageTemplate = new MessageTemplate(e.messageTemplate.raw);
+              return e;
+            });
+          initialBatch = initialBatch.concat(storedEvents);
+          this.options.durableStore.removeItem(key);
+        }
+      }
+      this.emit(initialBatch);
+    }
+  }
+
+  emit(events) {
+    if (this.batchedEvents.length + events.length <= this.options.maxSize) {
+      this.batchedEvents.push(...events);
+      this.storeEvents();
+    } else {
+      let cursor = this.options.maxSize - this.batchedEvents.length;
+      this.batchedEvents.push(...events.slice(0, cursor));
+      this.storeEvents();
+      while (cursor < events.length) {
+        this.cycleBatch();
+        this.batchedEvents.push(...events.slice(cursor, cursor += this.options.maxSize));
+        this.storeEvents();
+      }
+    }
+    return events;
+  }
+
+  flush() {
+    this.cycleBatch();
+    const corePromise = this.flushCore();
+    return corePromise instanceof Promise ? corePromise : Promise.resolve();
+  }
+
+  emitCore(events) {
+    return this.innerSink.emit(events);
+  }
+
+  flushCore() {
+    return this.innerSink.flush();
+  }
+
+  cycleBatch() {
+    clearTimeout(this.batchTimeout);
+    if (this.batchedEvents.length) {
+      const emitPromise = this.emitCore(this.batchedEvents.slice(0));
+      if (this.options.durableStore) {
+        const previousBatchKey = this.batchKey;
+        (emitPromise instanceof Promise ? emitPromise : Promise.resolve())
+          .then(() => this.options.durableStore.removeItem(previousBatchKey));
+      }
+      this.batchedEvents.length = 0;
+    }
+    this.batchKey = `${this.durableStorageKey}-${new Date().getTime()}`;
+    if (!isNaN(this.options.period) && this.options.period > 0) {
+      this.batchTimeout = setTimeout(() => this.cycleBatch(), this.options.period * 1000);
+    }
+  }
+
+  storeEvents() {
+    if (this.options.durableStore) {
+      this.options.durableStore.setItem(this.batchKey, JSON.stringify(this.batchedEvents));
+    }
+  }
+}
+
+class FilterStage {
+  constructor(predicate) {
+    this.predicate = predicate;
+  }
+
+  emit(events) {
+    return events.filter(this.predicate);
+  }
+
+  flush() {
+    return Promise.resolve();
+  }
+}
+
+/**
+ * Allows dynamic control of the logging level.
+ */
+class DynamicLevelSwitch {
+  constructor() {
+    this.minLevel = null;
+    /**
+         * Gets or sets a delegate that can be called when the pipeline needs to be flushed.
+         * This should generally not be modified, as it will be provided by the pipeline stage.
+         */
+    this.flushDelegate = () => Promise.resolve();
+  }
+
+  fatal() {
+    return this.flushDelegate().then(() => this.minLevel = LogEventLevel.fatal);
+  }
+
+  error() {
+    return this.flushDelegate().then(() => this.minLevel = LogEventLevel.error);
+  }
+
+  warning() {
+    return this.flushDelegate().then(() => this.minLevel = LogEventLevel.warning);
+  }
+
+  information() {
+    return this.flushDelegate().then(() => this.minLevel = LogEventLevel.information);
+  }
+
+  debug() {
+    return this.flushDelegate().then(() => this.minLevel = LogEventLevel.debug);
+  }
+
+  verbose() {
+    return this.flushDelegate().then(() => this.minLevel = LogEventLevel.verbose);
+  }
+
+  off() {
+    return this.flushDelegate().then(() => this.minLevel = LogEventLevel.off);
+  }
+
+  isEnabled(level) {
+    return this.minLevel === null || isEnabled(this.minLevel, level);
+  }
+}
+class DynamicLevelSwitchStage extends FilterStage {
+  /**
+     * Sets a delegate that can be called when the pipeline needs to be flushed.
+     */
+  setFlushDelegate(flushDelegate) {
+    this.dynamicLevelSwitch.flushDelegate = flushDelegate;
+  }
+
+  constructor(dynamicLevelSwitch) {
+    super((e) => dynamicLevelSwitch.isEnabled(e.level));
+    this.dynamicLevelSwitch = dynamicLevelSwitch;
+  }
+}
+
+class Pipeline {
+  constructor() {
+    this.stages = [];
+    this.eventQueue = [];
+    this.flushInProgress = false;
+  }
+
+  /**
+     * Adds a stage to the end of the pipeline.
+     * @param {PipelineStage} stage The pipeline stage to add.
+     */
+  addStage(stage) {
+    this.stages.push(stage);
+  }
+
+  /**
+     * Emits events through the pipeline. If a flush is currently in progress, the events will be queued and will been
+     * sent through the pipeline once the flush is complete.
+     * @param {LogEvent[]} events The events to emit.
+     */
+  emit(events) {
+    if (this.flushInProgress) {
+      this.eventQueue = this.eventQueue.concat(events);
+      return this.flushPromise;
+    }
+
+    if (!this.stages.length || !events.length) {
+      return Promise.resolve();
+    }
+    let promise = Promise.resolve(this.stages[0].emit(events));
+    for (let i = 1; i < this.stages.length; ++i) {
+      promise = promise.then((events) => this.stages[i].emit(events));
+    }
+    return promise;
+  }
+
+  /**
+     * Flushes events through the pipeline.
+     * @returns A {Promise<any>} that resolves when all events have been flushed and the pipeline can accept new events.
+     */
+  flush() {
+    if (this.flushInProgress) {
+      return this.flushPromise;
+    }
+    this.flushInProgress = true;
+    return this.flushPromise = Promise.resolve()
+      .then(() => {
+        if (this.stages.length === 0) {
+          return;
+        }
+        let promise = this.stages[0].flush();
+        for (let i = 1; i < this.stages.length; ++i) {
+          promise = promise.then(() => this.stages[i].flush());
+        }
+        return promise;
+      })
+      .then(() => {
+        this.flushInProgress = false;
+        const queuedEvents = this.eventQueue.slice();
+        this.eventQueue = [];
+        return this.emit(queuedEvents);
+      });
+  }
+}
+
+class SinkStage {
+  constructor(sink) {
+    this.sink = sink;
+  }
+
+  emit(events) {
+    this.sink.emit(events);
+    return events;
+  }
+
+  flush() {
+    return this.sink.flush();
+  }
+}
+
+const deepClone = (obj) => JSON.parse(JSON.stringify(obj));
+class EnrichStage {
+  constructor(enricher) {
+    this.enricher = enricher;
+  }
+
+  emit(events) {
+    for (let i = 0; i < events.length; ++i) {
+      const extraProperties = this.enricher instanceof Function
+        ? this.enricher(deepClone(events[i].properties))
+        : this.enricher;
+      Object.assign(events[i].properties, extraProperties);
+    }
+    return events;
+  }
+
+  flush() {
+    return Promise.resolve();
+  }
+}
+
+/**
+ * Configures pipelines for new logger instances.
+ */
+class LoggerConfiguration {
+  constructor() {
+    /**
+         * Sets the minimum level for any subsequent stages in the pipeline.
+         */
+    this.minLevel = Object.assign((levelOrSwitch) => {
+      if (typeof levelOrSwitch === 'undefined' || levelOrSwitch === null) {
+        throw new TypeError('Argument "levelOrSwitch" is not a valid LogEventLevel value or DynamicLevelSwitch instance.');
+      } else if (levelOrSwitch instanceof DynamicLevelSwitch) {
+        const switchStage = new DynamicLevelSwitchStage(levelOrSwitch);
+        const { flush } = this.pipeline;
+        switchStage.setFlushDelegate(() => this.pipeline.flush());
+        this.pipeline.addStage(switchStage);
+        return this;
+      } else if (typeof levelOrSwitch === 'string') {
+        const level = LogEventLevel[levelOrSwitch.toLowerCase()];
+        if (typeof level === 'undefined' || level === null) {
+          throw new TypeError('Argument "levelOrSwitch" is not a valid LogEventLevel value.');
+        }
+        return this.filter((e) => isEnabled(level, e.level));
+      } else {
+        return this.filter((e) => isEnabled(levelOrSwitch, e.level));
+      }
+    }, {
+      fatal: () => this.minLevel(LogEventLevel.fatal),
+      error: () => this.minLevel(LogEventLevel.error),
+      warning: () => this.minLevel(LogEventLevel.warning),
+      information: () => this.minLevel(LogEventLevel.information),
+      debug: () => this.minLevel(LogEventLevel.debug),
+      verbose: () => this.minLevel(LogEventLevel.verbose),
+    });
+    this.pipeline = new Pipeline();
+    this._suppressErrors = true;
+  }
+
+  /**
+     * Adds a sink to the pipeline.
+     * @param {Sink} sink The sink to add.
+     */
+  writeTo(sink) {
+    this.pipeline.addStage(new SinkStage(sink));
+    return this;
+  }
+
+  /**
+     * Adds a filter to the pipeline.
+     * @param {(e: LogEvent) => boolean} predicate Filter predicate to use.
+     */
+  filter(predicate) {
+    if (predicate instanceof Function) {
+      this.pipeline.addStage(new FilterStage(predicate));
+    } else {
+      throw new TypeError('Argument "predicate" must be a function.');
+    }
+    return this;
+  }
+
+  /**
+     * Adds an enricher to the pipeline.
+     */
+  enrich(enricher) {
+    if (enricher instanceof Function || enricher instanceof Object) {
+      this.pipeline.addStage(new EnrichStage(enricher));
+    } else {
+      throw new TypeError('Argument "enricher" must be either a function or an object.');
+    }
+    return this;
+  }
+
+  /**
+     * Enable or disable error suppression.
+     */
+  suppressErrors(suppress) {
+    this._suppressErrors = typeof suppress === 'undefined' || !!suppress;
+    return this;
+  }
+
+  /**
+     * Creates a new logger instance based on this configuration.
+     */
+  create() {
+    return new Logger(this.pipeline, this._suppressErrors);
+  }
+}
+
+function configure() {
+  return new LoggerConfiguration();
+}
+
+export { configure, LoggerConfiguration, LogEventLevel, Logger, ConsoleSink, BatchedSink, DynamicLevelSwitch };
+// # sourceMappingURL=structured-log.es6.js.map

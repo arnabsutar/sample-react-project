@@ -1,8 +1,8 @@
 {
   "appName": "SampleReactApplication",
   "apiHost": "http://localhost:3000",
-  "logEndpoint": "http://localhost:8080",
+  "logEndpoint": "/api/log",
   "minimumLogLevel": "verbose",
   "consoleLogLevel": "warning",
-  "httpLogLevel": "fatal"
+  "httpLogLevel": "verbose"
 }
