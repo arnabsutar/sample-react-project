@@ -7,16 +7,21 @@ import RootSaga from './RootSaga';
 
 const sagaMiddleware = createSagaMiddleware();
 
-const appStrore = createStore(
+export const middlewares = [sagaMiddleware];
+
+export const createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore);
+
+export const appStrore = createStoreWithMiddleware(
   RootReducer,
-  composeWithDevTools(applyMiddleware(sagaMiddleware)),
+  composeWithDevTools(applyMiddleware(...middlewares)),
 );
 
 /**
  * Un-comment the below section and comment above appStore creation statement
  * in case user doesn't want to have redux dev tool
  */
-// const appStrore = createStore(RootReducer, applyMiddleware(sagaMiddleware));
+// export const appStrore = createStoreWithMiddleware(RootReducer);
+
 sagaMiddleware.run(RootSaga);
 
 const { dispatch } = appStrore;
