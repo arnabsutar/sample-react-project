@@ -2,8 +2,31 @@ const express = require('express');
 const path = require('path');
 const winston = require('winston');
 
+const myCustomLevels = {
+  levels: {
+    all: 0,
+    fatal: 1,
+    error: 3,
+    warning: 7,
+    information: 15,
+    debug: 31,
+    verbose: 63,
+  },
+  colors: {
+    all: 'blue',
+    fatal: 'red',
+    error: 'red',
+    warning: 'orange',
+    information: 'green',
+    debug: 'blue',
+    verbose: 'blue',
+  },
+};
+
 const logger = winston.createLogger({
   format: winston.format.json(),
+  level: myCustomLevels.levels.all,
+  levels: myCustomLevels.levels,
   transports: [
     //
     // - Write all logs with level `error` and below to `error.log`
@@ -35,10 +58,10 @@ app.get('/', (req, res) => {
 });
 
 app.post('/api/log', (req, res) => {
-  req.body.map((e) => logger.info(e));
+  req.body.map((e) => logger.log(e));
   // logger.info(req.body);
   res.send(`Hello Logging ${req.body}`);
 });
 
 app.listen(3000);
-logger.info('app started');
+logger.information('app started');
