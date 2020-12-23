@@ -5,12 +5,12 @@ const winston = require('winston');
 const myCustomLevels = {
   levels: {
     all: 0,
-    fatal: 1,
-    error: 3,
-    warning: 7,
-    information: 15,
-    debug: 31,
-    verbose: 63,
+    verbose: 1,
+    debug: 3,
+    information: 7,
+    warning: 15,
+    error: 31,
+    fatal: 63,
   },
   colors: {
     all: 'blue',
