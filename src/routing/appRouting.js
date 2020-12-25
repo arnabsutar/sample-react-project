@@ -1,3 +1,2 @@
-const arrs = [];
-const appRouting = [].concat(...arrs);
+const appRouting = [];
 export default appRouting;

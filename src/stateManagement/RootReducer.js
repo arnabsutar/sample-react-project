@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import ApplicationBaseReducer from '../app/common/redux/reducers/ApplicationBaseReducer';
+import ApplicationBaseReducer from '../app/common/redux/reducers/applicationBaseReducer';
 
 const RootReducer = combineReducers({
   ApplicationBaseReducer,
