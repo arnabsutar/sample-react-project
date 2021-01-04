@@ -1,5 +1,5 @@
-const module1Api = {
-  MOD_APP_1: {
+const defaultAPI = {
+  MOD_DEFAULT: {
     apiKey: 'MOD_APP_1',
     endpoint: `${window.SERVER_DATA.apiHost}/MOD_APP_1`,
     type: 'GET',
@@ -8,4 +8,4 @@ const module1Api = {
   },
 };
 
-export default module1Api;
+export default defaultAPI;

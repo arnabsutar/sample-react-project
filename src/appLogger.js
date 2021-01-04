@@ -1,5 +1,5 @@
-import { configure, ConsoleSink, LogEventLevel } from './app/common/libs/structured-log/structured-log';
-import { HttpSink } from './app/common/util/httpSink';
+import { configure, ConsoleSink, LogEventLevel } from './app/common/libs/structured-log';
+import { HttpSink } from './app/common/util';
 
 // const structuredLog = require('structured-log');
 

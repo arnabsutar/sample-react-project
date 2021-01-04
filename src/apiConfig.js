@@ -1,11 +1,9 @@
 import baseAPI from './app/common/apiManagement/basicApi';
-import module1Api from './app/modules/module1/module1Api';
-import module2Api from './app/modules/module2/module2Api';
+import { defaultAPI } from './app/modules/default';
 
 const API = {
   ...baseAPI,
-  ...module1Api,
-  ...module2Api,
+  ...defaultAPI,
 };
 
 const REQUSET_HEADER = {
