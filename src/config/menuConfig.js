@@ -1,10 +1,7 @@
-import { defaultMenus, defaultMobileMenus } from '../app/modules/default';
+import { defaultMenus } from '../app/modules/default';
 
-const desktopMenus = [
+const menus = [
   ...defaultMenus,
 ];
 
-const mobileMenus = [
-  ...defaultMobileMenus,
-];
-export { desktopMenus, mobileMenus };
+export default menus;
