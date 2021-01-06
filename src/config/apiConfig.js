@@ -1,5 +1,5 @@
-import baseAPI from './app/common/apiManagement/basicApi';
-import { defaultAPI } from './app/modules/default';
+import baseAPI from '../app/common/apiManagement/basicApi';
+import { defaultAPI } from '../app/modules/default';
 
 const API = {
   ...baseAPI,
