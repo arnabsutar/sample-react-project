@@ -1,7 +1,7 @@
 import React from 'react';
 // import { lazy, Suspense } from 'react';
 import { Router, Switch, Route } from 'react-router-dom';
-import './App.scss';
+import './app.scss';
 
 import { appHistory } from './app/common/util';
 import { Home } from './app/modules/default';
