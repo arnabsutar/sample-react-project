@@ -1,4 +1,4 @@
-export default {
+const apiConfig = {
   MOD_DEFAULT: {
     apiKey: 'MOD_APP_1',
     endpoint: `${window.SERVER_DATA.apiHost}/MOD_APP_1`,
@@ -7,3 +7,5 @@ export default {
     showLoading: true,
   },
 };
+
+export default apiConfig;
