@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import './index.scss';
-import App from './app.t';
+import App from './app';
 import reportWebVitals from './reportWebVitals';
 // eslint-disable-next-line no-unused-vars
 import i18n from './app/common/i18n';
