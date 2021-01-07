@@ -4,6 +4,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import React from 'react';
+import appLogger from '../../../../../appLogger';
 /**
  * @description
  * @author Arnab Sutar
@@ -11,10 +12,14 @@ import React from 'react';
  * @param {*} props
  * @return {*} - Home component
  */
-const Home = (props) => (
-  <div>
-    React is Awesome
-  </div>
-);
+const Home = (props) => {
+  appLogger.error('SAMPLE Message');
+  return (
+
+    <div>
+      React is Awesome
+    </div>
+  );
+};
 
 export default Home;

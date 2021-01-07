@@ -2,6 +2,14 @@
 <html lang="en">
   <head>
     <script>
+      window.SERVER_DATA = {
+        appName: 'SampleReactApplication',
+        apiHost: 'http://localhost:3000',
+        logEndpoint: '/api/log',
+        minimumLogLevel: 'warning',
+        consoleLogLevel: 'warning',
+        httpLogLevel: 'warning',
+      };
       fetch('appConfig.json?' + new Date().getTime())
         .then((response) => response.json())
         .then((data) => {

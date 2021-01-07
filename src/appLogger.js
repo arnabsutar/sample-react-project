@@ -1,7 +1,5 @@
-import { configure, ConsoleSink, LogEventLevel } from './app/common/libs/structured-log';
+import { configure, ConsoleSink, LogEventLevel } from 'structured-log';
 import { HttpSink } from './app/common/util';
-
-// const structuredLog = require('structured-log');
 
 const getLogLevel = (levelStr) => {
   switch (levelStr) {

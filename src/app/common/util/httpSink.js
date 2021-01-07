@@ -65,7 +65,7 @@ class HttpSink {
     this.batchSize = options.batchSize;
     this.eventQueues = [];
 
-    this.internalEventThreshold = 2;
+    this.internalEventThreshold = 1;
     if (this.batchMode && this.batchSize > 1) {
       this.internalEventThreshold = this.batchSize;
     }
@@ -77,7 +77,7 @@ class HttpSink {
   emit(events) {
     // update the event queue as per the level switch
     this.eventQueues = [...this.eventQueues, ...events].filter(
-      (e) => e.severity <= this.restrictedToMinimumLevel,
+      (e) => e.level <= this.restrictedToMinimumLevel,
     );
     this.processLogs();
   }
@@ -111,8 +111,36 @@ class HttpSink {
   /**
    *@param {*} events - events which needs to be posted to the configured endpoint.
    */
+  // eslint-disable-next-line class-methods-use-this
   postEvent(events) {
-    const logs = events.map((e) => e);
+    const logs = events.map((e) => {
+      e.message = e.messageTemplate ? e.messageTemplate.render(e.properties) : null;
+      switch (e.level) {
+        case 1:
+          e.logLevel = 'fatal';
+          break;
+        case 3:
+          e.logLevel = 'error';
+          break;
+        case 7:
+          e.logLevel = 'warning';
+          break;
+        case 15:
+          e.logLevel = 'information';
+          break;
+        case 31:
+          e.logLevel = 'debug';
+          break;
+        case 63:
+          e.logLevel = 'verbose';
+          break;
+        default:
+          e.logLevel = null;
+          break;
+      }
+
+      return e;
+    });
     axiosInstance.post(this.url, logs);
   }
 }
