@@ -1,9 +1,11 @@
+/* eslint-disable prefer-template */
 /* eslint-disable no-console */
 /* eslint-disable no-alert */
 /* eslint-disable no-shadow */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import appLogger from '../../../../../appLogger';
 /**
  * @description
@@ -13,7 +15,8 @@ import appLogger from '../../../../../appLogger';
  * @return {*} - Home component
  */
 const Home = (props) => {
-  appLogger.error('SAMPLE Message');
+  const [t] = useTranslation();
+  console.log('SAMPLE Message ' + t('static:businessCard.primaryHeading'));
   return (
 
     <div>
