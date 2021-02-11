@@ -1,7 +1,7 @@
 import { defaultMenus } from '../app/modules/default';
 
 const menus = [
-  ...defaultMenus,
+  ...defaultMenus(),
 ];
 
 export default menus;

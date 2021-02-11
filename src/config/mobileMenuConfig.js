@@ -1,7 +1,7 @@
 import { defaultMobileMenus } from '../app/modules/default';
 
 const mobileMenus = [
-  ...defaultMobileMenus,
+  ...defaultMobileMenus(),
 ];
 
 export default mobileMenus;
