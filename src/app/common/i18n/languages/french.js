@@ -1,4 +1,4 @@
-import homeResources from '../../app/modules/home/i18n/french';
+import homeResources from '../../../modules/home/i18n/french';
 
 const defaultMessage = {
   'default.welcome': 'Welcome',
