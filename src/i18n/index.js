@@ -3,7 +3,7 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import Backend from 'i18next-http-backend';
 import { enLang, frLang } from './languages';
-import { setLocale } from '../util/NumberFormatter';
+import { setLocale } from '../app/common/util/NumberFormatter';
 
 i18n
   .use(Backend)

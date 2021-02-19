@@ -5,7 +5,7 @@ import './index.scss';
 import App from './app';
 import reportWebVitals from './reportWebVitals';
 // eslint-disable-next-line no-unused-vars
-import i18n from './app/common/i18n';
+import i18n from './i18n';
 
 import appStore from './stateManagement/appStore';
 

@@ -1,4 +1,4 @@
-import { defaultMobileMenus } from '../app/modules/default';
+import { defaultMobileMenus } from '../app/modules/home';
 
 const mobileMenus = [
   ...defaultMobileMenus(),

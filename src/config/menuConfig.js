@@ -1,4 +1,4 @@
-import { defaultMenus } from '../app/modules/default';
+import { defaultMenus } from '../app/modules/home';
 
 const menus = [
   ...defaultMenus(),

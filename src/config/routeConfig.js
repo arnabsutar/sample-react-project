@@ -1,4 +1,4 @@
-import { defaultRoutes } from '../app/modules/default';
+import { defaultRoutes } from '../app/modules/home';
 
 const appRouting = [
   ...defaultRoutes,
